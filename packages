@@ -1,4 +1,10 @@
 sed
 gzip
 pacman
+pacman-contrib
+sudo
 systemd
+python
+python-pip
+ansible
+git

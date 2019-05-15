@@ -7,15 +7,10 @@ ENV container=docker
 
 USER root
 
-# Update, install sudo and systemd, cleanup and remove unneeded unit files.
+# remove unneeded unit files.
 WORKDIR /lib/systemd/system/sysinit.target.wants/
 
-RUN pacman -S -y && \
-    pacman -S --noconfirm \
-    pacman-contrib \
-    systemd \
-  && pacman -S -c --noconfirm && \
-  (for i in *; do [ "${i}" = "systemd-tmpfiles-setup.service" ] || rm -vf "${i}"; done); \
+RUN (for i in *; do [ "${i}" = "systemd-tmpfiles-setup.service" ] || rm -vf "${i}"; done); \
     rm -vf /lib/systemd/system/multi-user.target.wants/*; \
     rm -vf /etc/systemd/system/*.wants/*; \
     rm -vf /lib/systemd/system/local-fs.target.wants/*; \
@@ -25,12 +20,6 @@ RUN pacman -S -y && \
 
 RUN mkdir -p /var/cache/pacman/pkg && /usr/sbin/paccache -r
 
-# Install python and Ansible.
-RUN pacman -Syu --noconfirm \
-    && pacman -S --noconfirm \
-    python python-pip ansible git
-
-RUN mkdir -p /var/cache/pacman/pkg && /usr/sbin/paccache -r
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible/roles/roles_to_test/tests && printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
