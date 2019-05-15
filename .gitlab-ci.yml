@@ -1,5 +1,4 @@
 ---
-image: tmaier/docker-compose:latest
 services:
  - docker:dind
 stages:
@@ -29,10 +28,9 @@ build_dockerfiles:
   stage: build_and_push
   cache: {}
   before_script:
-      - docker-compose --version
       - docker version
       - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
   script:
     - echo "$CONTAINER_COMMIT_IMAGE"
-    - docker build --pull -t $ARCH_CONTAINER_RELEASE_IMAGE .
+    - make docker-image
     - docker push $ARCH_CONTAINER_RELEASE_IMAGE:$LATEST_TAG
