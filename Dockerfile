@@ -20,6 +20,8 @@ RUN (for i in *; do [ "${i}" = "systemd-tmpfiles-setup.service" ] || rm -vf "${i
 
 RUN mkdir -p /var/cache/pacman/pkg && /usr/sbin/paccache -r
 
+COPY ansible-playbook-wrapper /usr/local/bin/
+
 # Install Ansible inventory file.
 RUN mkdir -p /etc/ansible/roles/roles_to_test/tests && printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
 
