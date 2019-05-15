@@ -12,6 +12,9 @@ rootfs:
 	tar --numeric-owner --xattrs --acls --exclude-from=exclude -C $(TMPDIR) -c . -f archlinux.tar
 	rm -rf $(TMPDIR)
 
+docker-image-hub: rootfs
+	docker build -t docker.io/saltman33/ansible-archlinux:latest .
+
 docker-image: rootfs
 	docker build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) .
 
@@ -26,6 +29,9 @@ ci-test:
 	docker run --rm --privileged --tmpfs=/tmp:exec --tmpfs=/run/shm -v /run/docker.sock:/run/docker.sock \
 		-v $(PWD):/app -w /app $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) \
 		sh -c 'pacman -Syu --noconfirm make devtools docker && make docker-image-test'
+
+docker-push-hub:
+	docker push docker.io/saltman33/ansible-archlinux:latest
 
 docker-push:
 	docker push $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
