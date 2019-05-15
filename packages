@@ -7,4 +7,5 @@ systemd
 python
 python-pip
 ansible
+gawk
 git

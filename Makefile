@@ -28,7 +28,6 @@ ci-test:
 		sh -c 'pacman -Syu --noconfirm make devtools docker && make docker-image-test'
 
 docker-push:
-	docker login -u $(DOCKER_USER)
 	docker push $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
 
 .PHONY: rootfs docker-image docker-image-test ci-test docker-push
