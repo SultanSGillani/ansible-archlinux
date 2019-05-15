@@ -32,5 +32,5 @@ build_dockerfiles:
       - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
   script:
     - echo "$CONTAINER_COMMIT_IMAGE"
-    - make docker-image
+    - sudo make docker-image
     - docker push $ARCH_CONTAINER_RELEASE_IMAGE:$LATEST_TAG
