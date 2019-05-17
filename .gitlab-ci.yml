@@ -26,7 +26,6 @@ build_dockerfiles:
   variables:
     DOCKER_DRIVER: overlay2
   stage: build_and_push
-  cache: {}
   before_script:
       - docker version
       - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
