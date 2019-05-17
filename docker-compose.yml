@@ -4,7 +4,9 @@ services:
   ansible-arch:
     image: registry.gitlab.com/sultangillani/ansible-docker-archlinux:latest
     build:
-      context: archlinux
+      context: .
+      cache_from:
+        - registry.gitlab.com/sultangillani/ansible-docker-archlinux:latest
     stdin_open: true
     tty: true
     container_name: ansible-arch
