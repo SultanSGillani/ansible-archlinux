@@ -26,7 +26,7 @@ RUN systemctl set-default multi-user.target
 COPY ansible-playbook-wrapper /usr/local/bin/
 
 RUN addgroup -S ansible \
-    && useradd -rm -d /etc/ansible -s /bin/bash -g ansible ansible  \
+    && useradd -rm -d /etc/ansible --shell /bin/bash -g ansible ansible  \
     && chown -R ansible:ansible /etc/ansible \
     && printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts \
     && printf "ansible ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
