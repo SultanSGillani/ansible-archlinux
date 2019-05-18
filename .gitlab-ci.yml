@@ -39,9 +39,9 @@ build_dockerfiles:
     DOCKER_DRIVER: overlay2
   stage: build_and_push
   before_script:
-      - docker version
       - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
   script:
-    - echo "$CONTAINER_COMMIT_IMAGE"
     - sudo make docker-image
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
     - docker push $ARCH_CONTAINER_RELEASE_IMAGE:$LATEST_TAG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
