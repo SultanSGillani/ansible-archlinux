@@ -20,24 +20,36 @@ RUN (for i in *; do [ "${i}" = "systemd-tmpfiles-setup.service" ] || rm -vf "${i
 
 RUN mkdir -p /var/cache/pacman/pkg && /usr/sbin/paccache -r
 
-COPY ansible-playbook-wrapper /usr/local/bin/
-
-# Install Ansible inventory file.
-RUN mkdir -p /etc/ansible/roles/roles_to_test/tests && printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
-
 # Switch default target from graphical to multi-user.
 RUN systemctl set-default multi-user.target
 
-RUN useradd -ms /bin/bash ansible
-RUN printf "ansible ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+COPY ansible-playbook-wrapper /usr/local/bin/
 
-RUN chown -R ansible:ansible /etc/ansible
-
-WORKDIR /etc/ansible/roles/roles_to_test/tests
+RUN addgroup -S ansible \
+    && useradd -rm -d /etc/ansible -s /bin/bash -g ansible ansible  \
+    && chown -R ansible:ansible /etc/ansible \
+    && printf "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts \
+    && printf "ansible ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER ansible
-ENV TERM xterm
-ENV ANSIBLE_CONFIG /etc/ansible/roles/roles_to_test/tests/ansible.cfg
 
-VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
+RUN mkdir -p /etc/ansible/roles
+
+WORKDIR /etc/ansible/roles/roles_to_test
+
+ENV ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY} \
+    ANSIBLE_VERBOSITY=${ANSIBLE_VERBOSITY} \
+    ANSIBLE_ROLES_PATH=${ANSIBLE_ROLES_PATH} \
+    ANSIBLE_HOST_KEY_CHECKING=${ANSIBLE_HOST_KEY_CHECKING} \
+    ANSIBLE_LOG_PATH=${ANSIBLE_LOG_PATH} \
+    ANSIBLE_EXECUTABLE=${ANSIBLE_EXECUTABLE} \
+    ANSIBLE_BECOME=${ANSIBLE_BECOME} \
+    ANSIBLE_BECOME_USER=${ANSIBLE_BECOME_USER} \
+    ANSIBLE_PIPELINING=${ANSIBLE_PIPELINING} \
+    ANSIBLE_INVENTORY=${ANSIBLE_INVENTORY} \
+    ANSIBLE_INVENTORY_ENABLED=${ANSIBLE_INVENTORY_ENABLED} \
+    TTY=${TTY}
+
+VOLUME ["/sys/fs/cgroup", "/etc/ansible/roles/roles_to_test", "/tmp"]
+
 CMD ["bash"]
