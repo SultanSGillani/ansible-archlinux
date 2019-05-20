@@ -12,7 +12,7 @@ docker() {
 
 docker_build_push() {
 	echo Building docker image...
-	docker build --pull -t $CI_REGISTRY_IMAGE:$1 .
+	docker build -t $CI_REGISTRY_IMAGE:$1 .
 
 	echo Pushing docker image...
 	docker push $CI_REGISTRY_IMAGE:$1
