@@ -39,7 +39,7 @@ build:
     - docker build --cache-from $CONTAINER_IMAGE:latest -t $CONTAINER_IMAGE:$CI_COMMIT_SHA -t $CONTAINER_IMAGE:$CI_BUILD_REF -t $CONTAINER_IMAGE:latest .
     - docker_tag_push $CI_BUILD_SHA $CI_COMMIT_REF_SLUG
 
-.push &push
+.push: &push
   stage: push
 push:
   <<: push
