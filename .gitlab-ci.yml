@@ -1,46 +1,48 @@
 ---
 services:
-- docker:dind
-
-stages:
- - linting
- - build
- - push
+  - docker:dind
 
 variables:
   DOCKER_DRIVER: overlay2
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
   CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
   TTY: xterm
+
+stages:
+ - linting
+ - build
+ - push
  
 before_script:
-- source ci/prepare
+  - source ci/prepare
 
 cache:
   paths:
     - .cache/
     - venv/
+
 .linting: &linting
    stage: linting
 dockerfile_lint:
    <<: *linting
    image: hadolint/hadolint:latest-debian
-   before_script:
-      - hadolint --version
    script:
       - hadolint --config .hadolint.yaml ./Dockerfile
-build:
+
+.build: &build
   stage: build
-  before_script:
-      - "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+build:
+  <<: build
   script:
     - sudo make docker-image
     - docker pull $CONTAINER_IMAGE:latest
     - docker build --cache-from $CONTAINER_IMAGE:latest -t $CONTAINER_IMAGE:$CI_COMMIT_SHA -t $CONTAINER_IMAGE:$CI_BUILD_REF -t $CONTAINER_IMAGE:latest .
     - docker_tag_push $CI_BUILD_SHA $CI_COMMIT_REF_SLUG
 
-push:
+.push &push
   stage: push
+push:
+  <<: push
   script:
     - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
     - docker push $CONTAINER_IMAGE:latest
