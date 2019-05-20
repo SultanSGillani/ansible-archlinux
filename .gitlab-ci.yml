@@ -32,7 +32,7 @@ dockerfile_lint:
 .build: &build
   stage: build
 build:
-  <<: build
+  <<: *build
   script:
     - sudo make docker-image
     - docker pull $CONTAINER_IMAGE:latest
@@ -42,7 +42,7 @@ build:
 .push: &push
   stage: push
 push:
-  <<: push
+  <<: *push
   script:
     - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
     - docker push $CONTAINER_IMAGE:latest
