@@ -40,5 +40,8 @@ build:
 push:
   <<: *push
   script:
-    - sudo make docker-push
-
+    - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
+    - docker push $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
+    - docker push $CONTAINER_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker push $CONTAINER_IMAGE:$CI_BUILD_SHA

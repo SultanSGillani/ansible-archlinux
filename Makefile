@@ -1,10 +1,6 @@
 DOCKER_USER:=sultangillani
 DOCKER_ORGANIZATION=registry.gitlab.com/sultangillani
 DOCKER_IMAGE:=ansible-docker-archlinux
-CI_COMMIT_SHA:=$CI_COMMIT_SHA
-CI_COMMIT_REF_SLUG:=$CI_COMMIT_REF_SLUG
-CI_BUILD_SHA:=$CI_BUILD_SHA
-CI_BUILD_REF:=$CI_BUILD_REF
 
 rootfs:
 	$(eval TMPDIR := $(shell mktemp -d))
@@ -20,7 +16,7 @@ docker-image-hub: rootfs
 	docker build -t docker.io/saltman33/ansible-archlinux:latest .
 
 docker-image: rootfs
-	docker build --cache-from  $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_COMMIT_SHA) -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_COMMIT_REF_SLUG) -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_BUILD_SHA) -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_BUILD_REF) -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) .
+	docker build --cache-from  $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_COMMIT_SHA -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_COMMIT_REF_SLUG -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_BUILD_SHA -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_BUILD_REF -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) .
 
 docker-image-test: docker-image
 	# FIXME: /etc/mtab is hidden by docker so the stricter -Qkk fails
@@ -38,6 +34,6 @@ docker-push-hub:
 	docker push docker.io/saltman33/ansible-archlinux:latest
 
 docker-push:
-	docker push $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_COMMIT_SHA) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_COMMIT_REF_SLUG) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_BUILD_SHA) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$(CI_BUILD_REF) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
+	docker push $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
 
 .PHONY: rootfs docker-image docker-image-test ci-test docker-push
