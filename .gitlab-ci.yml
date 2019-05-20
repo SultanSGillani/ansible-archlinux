@@ -28,7 +28,7 @@ build:
   <<: *build
   script:
     - sudo make docker-image
-    - docker build --cache-from $CONTAINER_IMAGE:latest -t $CONTAINER_IMAGE:$CI_COMMIT_SHA -t $CONTAINER_IMAGE:$CI_COMMIT_REF_SLUG -t $CONTAINER_IMAGE:$CI_BUILD_SHA -t $CONTAINER_IMAGE:$CI_BUILD_REF .
+    - docker build --cache-from $CONTAINER_IMAGE:latest -t $CONTAINER_IMAGE:$CI_COMMIT_SHA -t $CONTAINER_IMAGE:$CI_COMMIT_REF_SLUG -t $CONTAINER_IMAGE:$CI_BUILD_SHA -t $CONTAINER_IMAGE:$CI_BUILD_REF -t $CONTAINER_IMAGE:latest .
 .push: &push
   stage: push
 push:
