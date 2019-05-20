@@ -4,7 +4,7 @@ export CI_BUILD_SHA="x${CI_BUILD_REF:0:8}"
 
 # Automatically login docker
 docker() {
-	if [ ! -e ~/.docker/config.json ]; then
+	if [ ! -e ~/.docker/config.json ] || [ ! -e /root/.docker/config.json ]; then
 		command docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
 	fi
 	command docker "$@"
