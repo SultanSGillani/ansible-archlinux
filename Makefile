@@ -16,7 +16,7 @@ docker-image-hub: rootfs
 	docker build -t docker.io/saltman33/ansible-archlinux:latest .
 
 docker-image: rootfs
-	docker build --cache-from  $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_COMMIT_SHA -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_COMMIT_REF_SLUG -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_BUILD_SHA -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):$CI_BUILD_REF -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) .
+	docker build -t  $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest  .
 
 docker-image-test: docker-image
 	# FIXME: /etc/mtab is hidden by docker so the stricter -Qkk fails
